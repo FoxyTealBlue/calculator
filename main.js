@@ -1,3 +1,26 @@
+const calculatorButtons = document.querySelectorAll(".calculatorButton");
+
+calculatorButtons.forEach((button) => {
+  button.addEventListener("click", (event) => {
+    if (event.target.innerText === "C") {
+      deleteNumber();
+    } else if (event.target.innerText === "AC") {
+      allClear();
+    } else {
+      console.log(event);
+      alert(event.target.innerText);
+    }
+  });
+});
+
+function deleteNumber() {
+  console.log("deleteNumber");
+}
+
+function allClear() {
+  console.log("allClear");
+}
+
 function add(x, y) {
   return x + y;
 }
