@@ -7,10 +7,25 @@
 }
 
 #display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: 120px;
   width: 350px;
   margin: 30px auto 30px auto;
   border: 2px black solid;
+}
+
+#history {
+  width: 325px;
+  text-align: right;
+  font-size: 1.25rem;
+}
+
+#current {
+  width: 325px;
+  text-align: right;
+  font-size: 3rem;
 }
 
 #buttons {

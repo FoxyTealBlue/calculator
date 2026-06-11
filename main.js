@@ -1,14 +1,39 @@
 const calculatorButtons = document.querySelectorAll(".calculatorButton");
+const calculator = {
+  operator1: "",
+  operator2: "",
+  operand: "",
+  operandSet: false,
+  solution: "",
+  assignValue: function (value) {
+    if (isNaN(value)) {
+      this.operand = value;
+      this.operandSet = true;
+      return;
+    }
+    !this.operandSet
+      ? (this.operator1 = this.operator1 + value)
+      : (this.operator2 = this.operator2 + value);
+  },
+};
 
 calculatorButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     if (event.target.innerText === "C") {
       deleteNumber();
     } else if (event.target.innerText === "AC") {
-      allClear();
+      clearAll();
+    } else if (event.target.innerText === "=") {
+      calculator.solution =
+        "" +
+        operate(
+          Number(calculator.operator1),
+          Number(calculator.operator2),
+          calculator.operand,
+        );
     } else {
-      console.log(event);
-      alert(event.target.innerText);
+      calculator.assignValue(event.target.innerText);
+      console.table(calculator);
     }
   });
 });
@@ -17,7 +42,7 @@ function deleteNumber() {
   console.log("deleteNumber");
 }
 
-function allClear() {
+function clearAll() {
   console.log("allClear");
 }
 
