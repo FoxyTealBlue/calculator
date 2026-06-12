@@ -6,9 +6,24 @@ const calculator = {
   operandSet: false,
   solution: "",
   assignValue: function (value) {
+    if (value === ".") {
+      if (!this.operandSet && !this.operator1.includes(".")) {
+        this.operator1 = this.operator1 + value;
+      }
+      if (this.operandSet && !this.operator2.includes(".")) {
+        this.operator2 = this.operator2 + value;
+      }
+      return;
+    }
     if (isNaN(value)) {
       this.operand = value;
       this.operandSet = true;
+      return;
+    }
+    if (
+      (value === "0" && this.operator1 === "") ||
+      (value === "0" && this.operator2 === "" && this.operandSet)
+    ) {
       return;
     }
     !this.operandSet
@@ -20,7 +35,7 @@ const calculator = {
 calculatorButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     if (event.target.innerText === "C") {
-      deleteNumber();
+      backspace();
     } else if (event.target.innerText === "AC") {
       clearAll();
     } else if (event.target.innerText === "=") {
@@ -31,6 +46,7 @@ calculatorButtons.forEach((button) => {
           Number(calculator.operator2),
           calculator.operand,
         );
+      console.table(calculator);
     } else {
       calculator.assignValue(event.target.innerText);
       console.table(calculator);
@@ -38,12 +54,21 @@ calculatorButtons.forEach((button) => {
   });
 });
 
-function deleteNumber() {
-  console.log("deleteNumber");
+function backspace() {
+  // TODO : fix this
+  !calculator.operandSet
+    ? calculator.operator1.substring(0, calculator.operator1.length - 1)
+    : calculator.operator2.substring(0, calculator.operator2.length - 1);
+  console.table(calculator);
 }
 
 function clearAll() {
-  console.log("allClear");
+  calculator.operator1 = "";
+  calculator.operator2 = "";
+  calculator.operand = "";
+  calculator.operandSet = false;
+  calculator.solution = "";
+  console.table(calculator);
 }
 
 function add(x, y) {
