@@ -55,10 +55,16 @@ calculatorButtons.forEach((button) => {
 });
 
 function backspace() {
-  // TODO : fix this
+  // TODO : fix this -- does not go past operand.
   !calculator.operandSet
-    ? calculator.operator1.substring(0, calculator.operator1.length - 1)
-    : calculator.operator2.substring(0, calculator.operator2.length - 1);
+    ? (calculator.operator1 = calculator.operator1.substring(
+        0,
+        calculator.operator1.length - 1,
+      ))
+    : (calculator.operator2 = calculator.operator2.substring(
+        0,
+        calculator.operator2.length - 1,
+      ));
   console.table(calculator);
 }
 
