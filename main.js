@@ -5,8 +5,18 @@ const calculator = {
   operator: "",
   operatorSet: false,
   solution: "",
-  availableOperands: ["/", "*", "-", "+", "."],
+  availableOperands: ["/", "*", "-", "+"],
+  specialCharacters: ["."],
+  runCalculator: function (value) {
+    if (value === "C") {
+      return backspace();
+    } else if (value === "AC") {
+      return clearAll();
+    }
+    this.assignValue(value);
+  },
   assignValue: function (value) {
+    // TODO : CLEAN THIS UP, MAY NOT NEED.
     if (this.solution !== "") {
       console.log("this.solution !== ''");
       if (this.availableOperands.includes(value)) {
@@ -16,9 +26,26 @@ const calculator = {
         this.operand2 = "";
         this.solution = "";
         updateDisplayCurrent();
-        return;
+        return console.table(calculator);
       }
       return;
+    }
+    if (value === "=" && this.operand2 === "") {
+      this.solution = this.operand1;
+
+      return updateDisplayCurrent(this.solution, "=");
+    }
+    if (value === "=") {
+      calculator.solution =
+        "" +
+        operate(
+          Number(calculator.operand1),
+          Number(calculator.operand2),
+          calculator.operator,
+        );
+      updateDisplayCurrent(calculator.solution, "=");
+      calculator.operand1 = calculator.solution;
+      return console.table(calculator);
     }
     if (value === ".") {
       console.log("value === '.'");
@@ -45,6 +72,7 @@ const calculator = {
       this.operand2 = "";
       this.operator = value;
       updateDisplayCurrent(this.operand1);
+      this.solution = "";
       return;
     }
     if (isNaN(value)) {
@@ -61,52 +89,30 @@ const calculator = {
     }
     if (!this.operatorSet) {
       this.operand1 = this.operand1 + value;
-      updateDisplayCurrent(this.operand1);
+      return updateDisplayCurrent(this.operand1);
     }
     if (this.operatorSet) {
       this.operand2 = this.operand2 + value;
-      updateDisplayCurrent(this.operand2);
+      return updateDisplayCurrent(this.operand2);
     }
   },
 };
 
 calculatorButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
-    if (event.target.innerText === "C") {
-      backspace();
-    } else if (event.target.innerText === "AC") {
-      clearAll();
-    } else if (event.target.innerText === "=") {
-      calculator.solution =
-        "" +
-        operate(
-          Number(calculator.operand1),
-          Number(calculator.operand2),
-          calculator.operator,
-        );
-      updateDisplayCurrent(calculator.solution);
-      console.table(calculator);
-    } else {
-      calculator.assignValue(event.target.innerText);
-      console.table(calculator);
-    }
+    calculator.runCalculator(event.target.innerText);
   });
 });
 
 document.addEventListener("keydown", (event) => {
-  console.log(event.key);
   if (event.key === "Enter") {
-    calculator.solution =
-      "" +
-      operate(
-        Number(calculator.operand1),
-        Number(calculator.operand2),
-        calculator.operator,
-      );
-    updateDisplayCurrent(calculator.solution);
-    return console.table(calculator);
+    calculator.runCalculator("=");
   }
-  if (calculator.availableOperands.includes(event.key) || !isNaN(event.key)) {
+  if (
+    calculator.availableOperands.includes(event.key) ||
+    !isNaN(event.key) ||
+    calculator.specialCharacters.includes(event.key)
+  ) {
     return calculator.assignValue(event.key);
   }
 });
@@ -137,7 +143,7 @@ function backspace() {
     updateDisplayCurrent(calculator.operand2);
   }
   console.table(calculator);
-  return;
+  return updateDisplayCurrent("0");
 }
 
 function clearAll() {
@@ -191,15 +197,22 @@ function operate(x, y, operator) {
   return result;
 }
 
-function updateDisplayCurrent(input) {
+function updateDisplayCurrent(input, equals = "") {
   const current = document.querySelector("#current");
   current.textContent = input;
-  updateHistory();
+  updateHistory(equals);
   return;
 }
 
-function updateHistory() {
+function updateHistory(equals = "") {
   const history = document.querySelector("#history");
   history.textContent =
-    calculator.operand1 + " " + calculator.operator + " " + calculator.operand2;
+    calculator.operand1 +
+    " " +
+    calculator.operator +
+    " " +
+    calculator.operand2 +
+    " " +
+    equals;
+  return;
 }
