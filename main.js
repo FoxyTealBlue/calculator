@@ -1,55 +1,71 @@
 const calculatorButtons = document.querySelectorAll(".calculatorButton");
 const calculator = {
-  operator1: "",
-  operator2: "",
-  operand: "",
-  operandSet: false,
+  operand1: "",
+  operand2: "",
+  operator: "",
+  operatorSet: false,
   solution: "",
+  availableOperands: ["/", "*", "-", "+", "."],
   assignValue: function (value) {
-    if (value === ".") {
-      if (!this.operandSet && !this.operator1.includes(".")) {
-        this.operator1 = this.operator1 + value;
-        updateDisplayCurrent(this.operator1);
-      }
-      if (this.operandSet && !this.operator2.includes(".")) {
-        this.operator2 = this.operator2 + value;
-        updateDisplayCurrent(this.operator2);
+    if (this.solution !== "") {
+      console.log("this.solution !== ''");
+      if (this.availableOperands.includes(value)) {
+        console.log("this.availalbeOperands.includes(value)");
+        this.operator = value;
+        this.operatorSet = true;
+        this.operand2 = "";
+        this.solution = "";
+        updateDisplayCurrent();
+        return;
       }
       return;
     }
-    if (isNaN(value) && this.operandSet) {
+    if (value === ".") {
+      console.log("value === '.'");
+      if (!this.operatorSet && !this.operand1.includes(".")) {
+        this.operand1 = this.operand1 + value;
+        updateDisplayCurrent(this.operand1);
+      }
+      if (this.operatorSet && !this.operand2.includes(".")) {
+        this.operand2 = this.operand2 + value;
+        updateDisplayCurrent(this.operand2);
+      }
+      return;
+    }
+    if (isNaN(value) && this.operatorSet) {
+      console.log("isNaN(value) && this.operatorSet");
       calculator.solution =
         "" +
         operate(
-          Number(calculator.operator1),
-          Number(calculator.operator2),
-          calculator.operand,
+          Number(calculator.operand1),
+          Number(calculator.operand2),
+          calculator.operator,
         );
-      this.operator1 = this.solution;
-      this.operator2 = "";
-      this.operand = value;
-      updateDisplayCurrent(this.operator1);
+      this.operand1 = this.solution;
+      this.operand2 = "";
+      this.operator = value;
+      updateDisplayCurrent(this.operand1);
       return;
     }
     if (isNaN(value)) {
-      this.operand = value;
-      this.operandSet = true;
+      this.operator = value;
+      this.operatorSet = true;
       updateHistory();
       return;
     }
     if (
-      (value === "0" && this.operator1 === "") ||
-      (value === "0" && this.operator2 === "" && this.operandSet)
+      (value === "0" && this.operand1 === "") ||
+      (value === "0" && this.operand2 === "" && this.operatorSet)
     ) {
       return;
     }
-    if (!this.operandSet) {
-      this.operator1 = this.operator1 + value;
-      updateDisplayCurrent(this.operator1);
+    if (!this.operatorSet) {
+      this.operand1 = this.operand1 + value;
+      updateDisplayCurrent(this.operand1);
     }
-    if (this.operandSet) {
-      this.operator2 = this.operator2 + value;
-      updateDisplayCurrent(this.operator2);
+    if (this.operatorSet) {
+      this.operand2 = this.operand2 + value;
+      updateDisplayCurrent(this.operand2);
     }
   },
 };
@@ -64,9 +80,9 @@ calculatorButtons.forEach((button) => {
       calculator.solution =
         "" +
         operate(
-          Number(calculator.operator1),
-          Number(calculator.operator2),
-          calculator.operand,
+          Number(calculator.operand1),
+          Number(calculator.operand2),
+          calculator.operator,
         );
       updateDisplayCurrent(calculator.solution);
       console.table(calculator);
@@ -77,30 +93,48 @@ calculatorButtons.forEach((button) => {
   });
 });
 
+document.addEventListener("keydown", (event) => {
+  console.log(event.key);
+  if (event.key === "Enter") {
+    calculator.solution =
+      "" +
+      operate(
+        Number(calculator.operand1),
+        Number(calculator.operand2),
+        calculator.operator,
+      );
+    updateDisplayCurrent(calculator.solution);
+    return console.table(calculator);
+  }
+  if (calculator.availableOperands.includes(event.key) || !isNaN(event.key)) {
+    return calculator.assignValue(event.key);
+  }
+});
+
 function backspace() {
   if (
-    calculator.operator1 === "" &&
-    calculator.operator2 === "" &&
-    calculator.operand === ""
+    calculator.operand1 === "" &&
+    calculator.operand2 === "" &&
+    calculator.operator === ""
   ) {
     console.log("should clear all");
     clearAll();
-  } else if (!calculator.operandSet) {
-    calculator.operator1 = calculator.operator1.substring(
+  } else if (!calculator.operatorSet) {
+    calculator.operand1 = calculator.operand1.substring(
       0,
-      calculator.operator1.length - 1,
+      calculator.operand1.length - 1,
     );
-    updateDisplayCurrent(calculator.operator1);
-  } else if (calculator.operandSet && calculator.operator2 === "") {
-    calculator.operand = "";
-    calculator.operandSet = false;
-    updateDisplayCurrent(calculator.operator1);
-  } else if (calculator.operandSet && calculator.operator2 !== "") {
-    calculator.operator2 = calculator.operator2.substring(
+    updateDisplayCurrent(calculator.operand1);
+  } else if (calculator.operatorSet && calculator.operand2 === "") {
+    calculator.operator = "";
+    calculator.operatorSet = false;
+    updateDisplayCurrent(calculator.operand1);
+  } else if (calculator.operatorSet && calculator.operand2 !== "") {
+    calculator.operand2 = calculator.operand2.substring(
       0,
-      calculator.operator2.length - 1,
+      calculator.operand2.length - 1,
     );
-    updateDisplayCurrent(calculator.operator2);
+    updateDisplayCurrent(calculator.operand2);
   }
   console.table(calculator);
   return;
@@ -108,10 +142,10 @@ function backspace() {
 
 function clearAll() {
   updateDisplayCurrent("0");
-  calculator.operator1 = "";
-  calculator.operator2 = "";
-  calculator.operand = "";
-  calculator.operandSet = false;
+  calculator.operand1 = "";
+  calculator.operand2 = "";
+  calculator.operator = "";
+  calculator.operatorSet = false;
   calculator.solution = "";
   updateHistory();
   console.table(calculator);
@@ -167,9 +201,5 @@ function updateDisplayCurrent(input) {
 function updateHistory() {
   const history = document.querySelector("#history");
   history.textContent =
-    calculator.operator1 +
-    " " +
-    calculator.operand +
-    " " +
-    calculator.operator2;
+    calculator.operand1 + " " + calculator.operator + " " + calculator.operand2;
 }
