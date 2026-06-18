@@ -1,9 +1,28 @@
+:root {
+  --teal: hsl(169.71, 85.37%, 75.88%);
+  --dark-teal: hsl(169.71, 85.37%, 55.88%);
+  --lavender: hsl(241.32, 76.47%, 76.67%);
+  --dark-lavender: hsl(241.32, 76.47%, 67.67%);
+  --light-purple: hsl(278.24, 83.49%, 78.63%);
+  --pink: hsl(296.25, 69.57%, 81.96%);
+  --dark-pink: hsl(296.25, 69.57%, 65.96%);
+  --pink-shadow: hsl(296.25, 59.57%, 35.96%);
+  --shadow: hsla(0, 0%, 0%, 0.3);
+}
+
 #calculator {
   height: 650px;
   width: 450px;
   margin-left: auto;
   margin-right: auto;
-  border: 2px black solid;
+  border-radius: 20px;
+  padding-top: 10px;
+  background: linear-gradient(
+    180deg,
+    var(--lavender) 0%,
+    var(--dark-lavender) 100%
+  );
+  box-shadow: 0 0 18px hsla(0, 0%, 0%, 0.7);
 }
 
 #display {
@@ -13,7 +32,8 @@
   height: 120px;
   width: 350px;
   margin: 30px auto 30px auto;
-  border: 2px black solid;
+  border: 5px black inset;
+  background: linear-gradient(180deg, var(--teal) 0%, var(--dark-teal) 100%);
 }
 
 #history {
@@ -49,16 +69,28 @@
   justify-content: space-between;
 }
 
-#rowOne div,
-#rowTwo div,
-#rowThree div,
-#rowFour div,
-#rowFive div {
+.calculatorButton {
   height: 65px;
   width: 65px;
   justify-content: center;
   align-items: center;
-  border: 2px black solid;
+  cursor: pointer;
+  color: black;
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--pink) 0%, var(--dark-pink) 100%);
+  border: none;
+  box-shadow:
+    0px 8px 0px var(--pink-shadow),
+    0 12px 20px var(--shadow);
+  transition: all 0.1s ease;
+  transform: translateY(0);
+}
+
+.calculatorButton:active {
+  transform: translateY(6px);
+  box-shadow:
+    0 2px 0 var(--pink-shadow),
+    0 4px 8px var(--shadow);
 }
 
 #zero,
