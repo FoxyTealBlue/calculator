@@ -5,8 +5,30 @@ const calculator = {
   operator: "",
   operatorSet: false,
   solution: "",
+  buttonMap: {
+    Clear: "clear",
+    Delete: "delete",
+    Backspace: "delete",
+    "/": "divide",
+    "*": "mulitply",
+    7: "seven",
+    8: "eight",
+    9: "nine",
+    "-": "subtract",
+    4: "four",
+    5: "five",
+    6: "six",
+    "+": "add",
+    1: "one",
+    2: "two",
+    3: "three",
+    Enter: "equals",
+    0: "zero",
+    ".": "point",
+  },
   availableOperands: ["/", "*", "-", "+"],
   specialCharacters: ["."],
+  clickSound: new Audio("./clickSound.mp3"),
   runCalculator: function (value) {
     if (value === "C") {
       return backspace();
@@ -18,15 +40,13 @@ const calculator = {
   assignValue: function (value) {
     // TODO : CLEAN THIS UP, MAY NOT NEED.
     if (this.solution !== "") {
-      console.log("this.solution !== ''");
       if (this.availableOperands.includes(value)) {
-        console.log("this.availalbeOperands.includes(value)");
         this.operator = value;
         this.operatorSet = true;
         this.operand2 = "";
         this.solution = "";
         updateDisplayCurrent();
-        return console.table(calculator);
+        return;
       }
       return;
     }
@@ -45,10 +65,9 @@ const calculator = {
         );
       updateDisplayCurrent(calculator.solution, "=");
       calculator.operand1 = calculator.solution;
-      return console.table(calculator);
+      return;
     }
     if (value === ".") {
-      console.log("value === '.'");
       if (!this.operatorSet && !this.operand1.includes(".")) {
         this.operand1 = this.operand1 + value;
         updateDisplayCurrent(this.operand1);
@@ -60,7 +79,6 @@ const calculator = {
       return;
     }
     if (isNaN(value) && this.operatorSet) {
-      console.log("isNaN(value) && this.operatorSet");
       calculator.solution =
         "" +
         operate(
@@ -101,12 +119,29 @@ const calculator = {
 calculatorButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     calculator.runCalculator(event.target.innerText);
+    calculator.clickSound.currentTime = 0;
+    calculator.clickSound.play();
+  });
+  button.addEventListener("transitionend", () => {
+    button.classList.remove("buttonDepressed");
   });
 });
 
 document.addEventListener("keydown", (event) => {
+  if (calculator.buttonMap[event.key]) {
+    const value = calculator.buttonMap[event.key];
+    document.querySelector(`#${value}`).classList.add("buttonDepressed");
+    calculator.clickSound.currentTime = 0;
+    calculator.clickSound.play();
+  }
   if (event.key === "Enter") {
     calculator.runCalculator("=");
+  }
+  if (event.key === "Clear") {
+    calculator.runCalculator("AC");
+  }
+  if (event.key === "Backspace" || event.key === "Delete") {
+    calculator.runCalculator("C");
   }
   if (
     calculator.availableOperands.includes(event.key) ||
@@ -123,26 +158,27 @@ function backspace() {
     calculator.operand2 === "" &&
     calculator.operator === ""
   ) {
-    console.log("should clear all");
-    clearAll();
+    return clearAll();
   } else if (!calculator.operatorSet) {
+    if (calculator.operand1.length === 1) {
+      return clearAll();
+    }
     calculator.operand1 = calculator.operand1.substring(
       0,
       calculator.operand1.length - 1,
     );
-    updateDisplayCurrent(calculator.operand1);
+    return updateDisplayCurrent(calculator.operand1);
   } else if (calculator.operatorSet && calculator.operand2 === "") {
     calculator.operator = "";
     calculator.operatorSet = false;
-    updateDisplayCurrent(calculator.operand1);
+    return updateDisplayCurrent(calculator.operand1);
   } else if (calculator.operatorSet && calculator.operand2 !== "") {
     calculator.operand2 = calculator.operand2.substring(
       0,
       calculator.operand2.length - 1,
     );
-    updateDisplayCurrent(calculator.operand2);
+    return updateDisplayCurrent(calculator.operand2);
   }
-  console.table(calculator);
   return updateDisplayCurrent("0");
 }
 
@@ -154,7 +190,6 @@ function clearAll() {
   calculator.operatorSet = false;
   calculator.solution = "";
   updateHistory();
-  console.table(calculator);
 }
 
 function add(x, y) {

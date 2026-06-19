@@ -69,6 +69,10 @@
   justify-content: space-between;
 }
 
+#rowFive {
+  gap: 22.5px;
+}
+
 .calculatorButton {
   height: 65px;
   width: 65px;
@@ -87,6 +91,13 @@
 }
 
 .calculatorButton:active {
+  transform: translateY(6px);
+  box-shadow:
+    0 2px 0 var(--pink-shadow),
+    0 4px 8px var(--shadow);
+}
+
+.buttonDepressed {
   transform: translateY(6px);
   box-shadow:
     0 2px 0 var(--pink-shadow),
