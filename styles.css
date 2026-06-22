@@ -1,13 +1,27 @@
+@font-face {
+  font-family: "Digital7Mono";
+  src: url("./Digital7Mono-Yz9J4.ttf") format("truetype");
+}
 :root {
   --teal: hsl(169.71, 85.37%, 75.88%);
   --dark-teal: hsl(169.71, 85.37%, 55.88%);
   --lavender: hsl(241.32, 76.47%, 76.67%);
   --dark-lavender: hsl(241.32, 76.47%, 67.67%);
+  --lavender-shadow: hsla(241.32, 66.47%, 57.67%, 0.69);
   --light-purple: hsl(278.24, 83.49%, 78.63%);
   --pink: hsl(296.25, 69.57%, 81.96%);
   --dark-pink: hsl(296.25, 69.57%, 65.96%);
   --pink-shadow: hsl(296.25, 59.57%, 35.96%);
-  --shadow: hsla(0, 0%, 0%, 0.3);
+  --shadow: hsla(0, 0%, 0%, 0.56);
+}
+
+main {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--light-purple);
 }
 
 #calculator {
@@ -22,11 +36,15 @@
     var(--lavender) 0%,
     var(--dark-lavender) 100%
   );
-  box-shadow: 0 0 18px hsla(0, 0%, 0%, 0.7);
+  /* box-shadow: 0 0 18px hsla(0, 0%, 0%, 0.7); */
+  box-shadow:
+    -8px 8px 0px var(--lavender-shadow),
+    -20px 20px 20px var(--shadow);
 }
 
 #display {
   display: flex;
+  font-family: "Digital7Mono", monospace;
   flex-direction: column;
   align-items: center;
   height: 120px;
@@ -34,19 +52,31 @@
   margin: 30px auto 30px auto;
   border: 5px black inset;
   background: linear-gradient(180deg, var(--teal) 0%, var(--dark-teal) 100%);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+#display::-webkit-scrollbar {
+  display: none;
 }
 
 #history {
   width: 325px;
   height: 2rem;
   text-align: right;
-  font-size: 1.25rem;
+  font-size: 2rem;
+  border: none;
+  background: transparent;
 }
 
 #current {
   width: 325px;
   text-align: right;
-  font-size: 3rem;
+  font-size: 3.5rem;
+  border: none;
+  background: transparent;
 }
 
 #buttons {
@@ -76,6 +106,8 @@
 .calculatorButton {
   height: 65px;
   width: 65px;
+  font-size: 1.5rem;
+  font-weight: 900;
   justify-content: center;
   align-items: center;
   cursor: pointer;

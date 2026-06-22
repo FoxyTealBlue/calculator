@@ -29,6 +29,16 @@ const calculator = {
   availableOperands: ["/", "*", "-", "+"],
   specialCharacters: ["."],
   clickSound: new Audio("./clickSound.mp3"),
+  numberLimit: function () {
+    if (!this.operatorSet) {
+      if (this.operand1 < 10) {
+        return this.assignValue();
+      }
+    } else if (this.operatorSet) {
+      if (this.operand2 < 10) {
+      }
+    }
+  },
   runCalculator: function (value) {
     if (value === "C") {
       return backspace();
