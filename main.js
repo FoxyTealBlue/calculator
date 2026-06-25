@@ -10,7 +10,7 @@ const calculator = {
     Delete: "delete",
     Backspace: "delete",
     "/": "divide",
-    "*": "mulitply",
+    "*": "multiply",
     7: "seven",
     8: "eight",
     9: "nine",
@@ -48,7 +48,6 @@ const calculator = {
     this.assignValue(value);
   },
   assignValue: function (value) {
-    // TODO : CLEAN THIS UP, MAY NOT NEED.
     if (this.solution !== "") {
       if (this.availableOperands.includes(value)) {
         this.operator = value;
@@ -66,6 +65,11 @@ const calculator = {
       return updateDisplayCurrent(this.solution, "=");
     }
     if (value === "=") {
+      if (this.operand2 === "0" && this.operator === "/") {
+        alert("You cannot divide by 0.");
+        clearAll();
+        return;
+      }
       calculator.solution =
         "" +
         operate(
@@ -89,6 +93,11 @@ const calculator = {
       return;
     }
     if (isNaN(value) && this.operatorSet) {
+      if (this.operand2 === "0" && this.operator === "/") {
+        alert("You cannot divide by 0.");
+        clearAll();
+        return;
+      }
       calculator.solution =
         "" +
         operate(
@@ -104,17 +113,18 @@ const calculator = {
       return;
     }
     if (isNaN(value)) {
+      if (this.operand1 === "") return;
       this.operator = value;
       this.operatorSet = true;
       updateHistory();
       return;
     }
-    if (
-      (value === "0" && this.operand1 === "") ||
-      (value === "0" && this.operand2 === "" && this.operatorSet)
-    ) {
-      return;
-    }
+    // if (
+    //   (value === "0" && this.operand1 === "") ||
+    //   (value === "0" && this.operand2 === "" && this.operatorSet)
+    // ) {
+    //   return;
+    // }
     if (!this.operatorSet) {
       this.operand1 = this.operand1 + value;
       return updateDisplayCurrent(this.operand1);
@@ -215,9 +225,6 @@ function multiply(x, y) {
 }
 
 function divide(x, y) {
-  if ((x === 0 && y === 0) || y === 0) {
-    return console.error("You cannot divide by 0.");
-  }
   return x / y;
 }
 
@@ -245,6 +252,7 @@ function operate(x, y, operator) {
 function updateDisplayCurrent(input, equals = "") {
   const current = document.querySelector("#current");
   current.textContent = input;
+  current.scrollLeft = current.scrollWidth;
   updateHistory(equals);
   return;
 }
@@ -259,5 +267,6 @@ function updateHistory(equals = "") {
     calculator.operand2 +
     " " +
     equals;
+  history.scrollLeft = history.scrollWidth;
   return;
 }

@@ -49,22 +49,30 @@ main {
   align-items: center;
   height: 120px;
   width: 350px;
+  gap: 3px;
   margin: 30px auto 30px auto;
   border: 5px black inset;
   background: linear-gradient(180deg, var(--teal) 0%, var(--dark-teal) 100%);
+  overflow: hidden;
+}
+
+#history,
+#current {
+  min-height: 0;
   overflow-x: auto;
   overflow-y: hidden;
   scrollbar-width: none;
   white-space: nowrap;
 }
 
-#display::-webkit-scrollbar {
+#history::-webkit-scrollbar,
+#current::-webkit-scrollbar {
   display: none;
 }
 
 #history {
+  flex: 1;
   width: 325px;
-  height: 2rem;
   text-align: right;
   font-size: 2rem;
   border: none;
@@ -72,6 +80,7 @@ main {
 }
 
 #current {
+  flex: 2;
   width: 325px;
   text-align: right;
   font-size: 3.5rem;
